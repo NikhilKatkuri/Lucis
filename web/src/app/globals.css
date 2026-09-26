@@ -1,0 +1,433 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================================================
+   Lucis design tokens
+   --------------------------------------------------------------------------
+   Layer 1 (:root / .dark)  raw colour values, oklch
+   Layer 2 (@theme inline)  maps those values onto Tailwind colour utilities
+   Layer 3 (@theme)         non-colour tokens: radii, elevation, motion, fonts
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Layer 1a — Light theme
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Brand -------------------------------------------------------------- */
+  --primary: oklch(0.5 0.072 175);
+  --primary-foreground: oklch(0.99 0.005 175);
+  --primary-container: oklch(0.938 0.028 172);
+  --primary-container-foreground: oklch(0.35 0.062 176);
+
+  --secondary: oklch(0.3 0.03 225);
+  --secondary-foreground: oklch(0.97 0.006 220);
+  --secondary-container: oklch(0.93 0.014 220);
+  --secondary-container-foreground: oklch(0.29 0.03 225);
+
+  /* Status ------------------------------------------------------------- */
+  --success: oklch(0.6 0.105 162);
+  --success-foreground: oklch(0.99 0.005 162);
+  --success-container: oklch(0.94 0.032 163);
+  --success-container-foreground: oklch(0.37 0.07 164);
+
+  --warning: oklch(0.7 0.115 58);
+  --warning-foreground: oklch(0.24 0.04 58);
+  --warning-container: oklch(0.96 0.04 68);
+  --warning-container-foreground: oklch(0.42 0.088 55);
+
+  --danger: oklch(0.6 0.148 29);
+  --danger-foreground: oklch(0.99 0.005 29);
+  --danger-container: oklch(0.962 0.026 30);
+  --danger-container-foreground: oklch(0.43 0.118 29);
+
+  --info: oklch(0.63 0.065 240);
+  --info-foreground: oklch(0.99 0.005 240);
+  --info-container: oklch(0.945 0.024 240);
+  --info-container-foreground: oklch(0.38 0.06 242);
+
+  /* Neutrals — Material 3 surface container ladder ---------------------- */
+  --background: oklch(0.966 0.005 145);
+  --foreground: oklch(0.26 0.02 232);
+  --surface: oklch(1 0 0);
+  --surface-container-lowest: oklch(1 0 0);
+  --surface-container-low: oklch(0.982 0.004 145);
+  --surface-container: oklch(0.995 0.002 145);
+  --surface-container-high: oklch(0.972 0.005 145);
+  --surface-container-highest: oklch(0.951 0.007 145);
+
+  --on-surface: oklch(0.26 0.02 232);
+  --on-surface-variant: oklch(0.47 0.018 228);
+  --muted: oklch(0.951 0.006 145);
+  --muted-foreground: oklch(0.53 0.016 225);
+  --accent: oklch(0.938 0.028 172);
+  --accent-foreground: oklch(0.35 0.062 176);
+
+  --border: oklch(0.915 0.006 145);
+  --input: oklch(0.9 0.006 145);
+  --ring: oklch(0.5 0.072 175);
+  --outline: oklch(0.6 0.015 225);
+  --outline-variant: oklch(0.885 0.007 145);
+
+  /* Severity — semantic alert ramp ------------------------------------- */
+  --severity-critical: oklch(0.548 0.185 27);
+  --severity-high: oklch(0.652 0.163 42);
+  --severity-medium: oklch(0.748 0.142 82);
+  --severity-low: oklch(0.6 0.105 162);
+  --severity-critical-container: oklch(0.958 0.028 27);
+  --severity-high-container: oklch(0.96 0.036 48);
+  --severity-medium-container: oklch(0.962 0.045 88);
+  --severity-low-container: oklch(0.945 0.032 163);
+
+  /* Charts ------------------------------------------------------------- */
+  --chart-1: oklch(0.5 0.072 175);
+  --chart-2: oklch(0.63 0.065 240);
+  --chart-3: oklch(0.7 0.115 58);
+  --chart-4: oklch(0.652 0.163 42);
+  --chart-5: oklch(0.6 0.105 162);
+  --chart-grid: oklch(0.915 0.006 145);
+
+  /* Navigation surface (prototype's deep navy rail) -------------------- */
+  --sidebar: oklch(0.245 0.028 228);
+  --sidebar-foreground: oklch(0.86 0.012 190);
+  --sidebar-primary: oklch(0.79 0.09 168);
+  --sidebar-primary-foreground: oklch(0.245 0.028 228);
+  --sidebar-accent: oklch(0.315 0.032 210);
+  --sidebar-accent-foreground: oklch(0.99 0.004 190);
+  --sidebar-border: oklch(0.34 0.03 214);
+  --sidebar-ring: oklch(0.79 0.09 168);
+  --sidebar-muted: oklch(0.62 0.026 205);
+}
+
+/* --------------------------------------------------------------------------
+   Layer 1b — Dark theme
+   -------------------------------------------------------------------------- */
+.dark {
+  color-scheme: dark;
+
+  --primary: oklch(0.76 0.096 172);
+  --primary-foreground: oklch(0.22 0.035 178);
+  --primary-container: oklch(0.36 0.055 176);
+  --primary-container-foreground: oklch(0.9 0.06 172);
+
+  --secondary: oklch(0.86 0.012 190);
+  --secondary-foreground: oklch(0.26 0.028 228);
+  --secondary-container: oklch(0.33 0.03 220);
+  --secondary-container-foreground: oklch(0.9 0.012 195);
+
+  --success: oklch(0.74 0.11 163);
+  --success-foreground: oklch(0.22 0.04 165);
+  --success-container: oklch(0.33 0.06 165);
+  --success-container-foreground: oklch(0.9 0.07 163);
+
+  --warning: oklch(0.8 0.12 66);
+  --warning-foreground: oklch(0.25 0.05 60);
+  --warning-container: oklch(0.37 0.075 62);
+  --warning-container-foreground: oklch(0.92 0.07 70);
+
+  --danger: oklch(0.71 0.15 29);
+  --danger-foreground: oklch(0.22 0.05 29);
+  --danger-container: oklch(0.37 0.1 28);
+  --danger-container-foreground: oklch(0.92 0.06 30);
+
+  --info: oklch(0.75 0.07 240);
+  --info-foreground: oklch(0.22 0.04 242);
+  --info-container: oklch(0.34 0.06 243);
+  --info-container-foreground: oklch(0.9 0.05 240);
+
+  --background: oklch(0.17 0.014 234);
+  --foreground: oklch(0.94 0.006 210);
+  --surface: oklch(0.212 0.016 232);
+  --surface-container-lowest: oklch(0.158 0.013 236);
+  --surface-container-low: oklch(0.199 0.015 233);
+  --surface-container: oklch(0.225 0.016 231);
+  --surface-container-high: oklch(0.262 0.017 228);
+  --surface-container-highest: oklch(0.302 0.018 226);
+
+  --on-surface: oklch(0.94 0.006 210);
+  --on-surface-variant: oklch(0.74 0.014 214);
+  --muted: oklch(0.272 0.016 230);
+  --muted-foreground: oklch(0.7 0.014 216);
+  --accent: oklch(0.34 0.05 176);
+  --accent-foreground: oklch(0.9 0.06 172);
+
+  --border: oklch(0.31 0.015 228);
+  --input: oklch(0.34 0.016 228);
+  --ring: oklch(0.76 0.096 172);
+  --outline: oklch(0.62 0.014 218);
+  --outline-variant: oklch(0.33 0.015 228);
+
+  --severity-critical: oklch(0.72 0.16 28);
+  --severity-high: oklch(0.78 0.145 48);
+  --severity-medium: oklch(0.84 0.13 88);
+  --severity-low: oklch(0.74 0.11 163);
+  --severity-critical-container: oklch(0.35 0.1 28);
+  --severity-high-container: oklch(0.37 0.085 48);
+  --severity-medium-container: oklch(0.38 0.075 88);
+  --severity-low-container: oklch(0.33 0.06 165);
+
+  --chart-1: oklch(0.76 0.096 172);
+  --chart-2: oklch(0.75 0.07 240);
+  --chart-3: oklch(0.8 0.12 66);
+  --chart-4: oklch(0.78 0.145 48);
+  --chart-5: oklch(0.74 0.11 163);
+  --chart-grid: oklch(0.31 0.015 228);
+
+  --sidebar: oklch(0.19 0.016 234);
+  --sidebar-foreground: oklch(0.85 0.012 200);
+  --sidebar-primary: oklch(0.78 0.09 170);
+  --sidebar-primary-foreground: oklch(0.19 0.016 234);
+  --sidebar-accent: oklch(0.28 0.024 226);
+  --sidebar-accent-foreground: oklch(0.97 0.004 195);
+  --sidebar-border: oklch(0.31 0.022 226);
+  --sidebar-ring: oklch(0.78 0.09 170);
+  --sidebar-muted: oklch(0.64 0.022 210);
+}
+
+/* --------------------------------------------------------------------------
+   Layer 2 — Tailwind colour utilities
+   -------------------------------------------------------------------------- */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-container: var(--primary-container);
+  --color-primary-container-foreground: var(--primary-container-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary-container: var(--secondary-container);
+  --color-secondary-container-foreground: var(--secondary-container-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-container: var(--success-container);
+  --color-success-container-foreground: var(--success-container-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-container: var(--warning-container);
+  --color-warning-container-foreground: var(--warning-container-foreground);
+
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-container: var(--danger-container);
+  --color-danger-container-foreground: var(--danger-container-foreground);
+
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-container: var(--info-container);
+  --color-info-container-foreground: var(--info-container-foreground);
+
+  --color-card: var(--surface);
+  --color-card-foreground: var(--on-surface);
+  --color-popover: var(--surface-container-highest);
+  --color-popover-foreground: var(--on-surface);
+
+  --color-surface: var(--surface);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+
+  --color-destructive: var(--danger);
+
+  --color-severity-critical: var(--severity-critical);
+  --color-severity-high: var(--severity-high);
+  --color-severity-medium: var(--severity-medium);
+  --color-severity-low: var(--severity-low);
+  --color-severity-critical-container: var(--severity-critical-container);
+  --color-severity-high-container: var(--severity-high-container);
+  --color-severity-medium-container: var(--severity-medium-container);
+  --color-severity-low-container: var(--severity-low-container);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-grid: var(--chart-grid);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-muted: var(--sidebar-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Layer 3 — Radii, elevation, motion
+   -------------------------------------------------------------------------- */
+@theme {
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+  --radius-3xl: 2rem;
+
+  /* Material 3 shape scale */
+  --radius-chip: 9999px;
+  --radius-card: 1rem;
+  --radius-dialog: 1.75rem;
+  --radius-sheet: 1.75rem;
+  --radius-button: 1.25rem;
+  --radius-field: 0.75rem;
+
+  /* Restrained elevation — depth without heavy shadows */
+  --shadow-elevation-1: 0 1px 2px 0 oklch(0.26 0.02 232 / 0.05);
+  --shadow-elevation-2: 0 2px 6px -1px oklch(0.26 0.02 232 / 0.07);
+  --shadow-elevation-3: 0 4px 14px -2px oklch(0.26 0.02 232 / 0.08);
+  --shadow-elevation-4: 0 8px 26px -4px oklch(0.26 0.02 232 / 0.1);
+  --shadow-elevation-5: 0 18px 52px -12px oklch(0.26 0.02 232 / 0.16);
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
+
+  --animate-pulse-ring: pulse-ring 2.4s var(--ease-standard) infinite;
+  --animate-shimmer: shimmer 1.8s linear infinite;
+  --animate-ripple: ripple 1.6s var(--ease-standard) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes ripple {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    /* Never allow horizontal scrolling */
+    overflow-x: hidden;
+  }
+
+  /* Consistent, high-contrast focus ring for keyboard users only */
+  :focus-visible {
+    @apply outline-ring outline-2 outline-offset-2;
+  }
+
+  /* Honour the OS reduced-motion preference globally. Components additionally
+     gate their own Framer Motion transitions on useReducedMotion(). */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Skeleton shimmer used by every loading placeholder */
+  .lucis-skeleton {
+    @apply bg-muted;
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklch, var(--muted-foreground) 10%, transparent),
+      transparent
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+
+  /* Respect device safe areas on notched phones */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+@layer utilities {
+  .scrollbar-slim {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .scrollbar-slim::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-slim::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 9999px;
+  }
+  .scrollbar-slim::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
