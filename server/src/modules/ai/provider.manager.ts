@@ -20,7 +20,13 @@ export class ProviderManager {
     }
     throw new Error(`No configured AI provider is available. ${failures.join("; ")}`);
   }
-  async health() { return Promise.all(this.providers.map(async (provider, index) => ({ name: provider.name, priority: index + 1, status: !provider.isConfigured() ? "unconfigured" : (await provider.health() ? "healthy" : "unavailable") }))); }
+  async health() {
+    return Promise.all(this.providers.map(async (provider, index) => ({
+      name: provider.name,
+      priority: index + 1,
+      status: !provider.isConfigured() ? "unconfigured" : (await provider.health() ? "healthy" : "unavailable"),
+    })));
+  }
   list() { return this.providers.map((provider, index) => ({ name: provider.name, priority: index + 1, status: provider.isConfigured() ? "configured" : "unconfigured" })); }
   setOrder(names: string[]) { this.providers = names.map(createProvider); return this.list(); }
 }

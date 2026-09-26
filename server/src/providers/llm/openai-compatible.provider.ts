@@ -45,6 +45,7 @@ export class OpenAiCompatibleProvider {
     if (!this.isConfigured()) throw new Error(`${this.name} API key is not configured`);
     const data = await requestJson(this.endpoint("/embeddings"), { method: "POST", headers: this.headers(), body: JSON.stringify({ model: this.name === "openai" ? "text-embedding-3-small" : this.model, input }) }, this.name);
     const first = Array.isArray(data.data) ? data.data[0] : undefined;
-    return first && typeof first === "object" && first !== null && "embedding" in first && Array.isArray(first.embedding) ? first.embedding.filter((value): value is number => typeof value === "number") : [];
+    const embedding = first && typeof first === "object" && first !== null && "embedding" in first && Array.isArray(first.embedding) ? first.embedding as unknown[] : [];
+    return embedding.filter((value: unknown): value is number => typeof value === "number");
   }
 }

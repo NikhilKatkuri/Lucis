@@ -1,2 +1,2 @@
-import { OllamaProvider } from "../llm/ollama.provider.js";
-export class PhiProvider extends OllamaProvider { readonly name = "phi"; }
+import { LocalProvider } from "../../modules/ai/provider.js";
+export class PhiProvider extends LocalProvider { readonly name = "phi"; }
