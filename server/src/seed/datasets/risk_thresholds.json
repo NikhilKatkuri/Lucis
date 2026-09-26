@@ -1,0 +1,12 @@
+{
+  "LOW": 0.35,
+  "MODERATE": 0.6,
+  "HIGH": 0.8,
+  "CRITICAL": 0.9,
+  "weights": {
+    "weather": 0.25,
+    "satellite": 0.4,
+    "sensors": 0.2,
+    "reports": 0.15
+  }
+}
