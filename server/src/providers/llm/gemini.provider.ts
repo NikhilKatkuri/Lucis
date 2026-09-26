@@ -1,2 +1,16 @@
-import { LocalProvider } from "../../modules/ai/provider.js";
-export class GeminiProvider extends LocalProvider { readonly name = "gemini"; }
+import { env } from "../../config/env.js";
+import type { AiMessage } from "../../modules/ai/provider.js";
+import { requestJson, requestStream, streamLines, type JsonObject } from "../http.js";
+
+export class GeminiProvider {
+  readonly name = "gemini";
+  isConfigured(): boolean { return Boolean(env.GEMINI_API_KEY); }
+  async initialize(): Promise<void> { return Promise.resolve(); }
+  private url(action: string): string { return `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(env.GEMINI_MODEL)}:${action}?key=${encodeURIComponent(env.GEMINI_API_KEY ?? "")}`; }
+  private body(messages: AiMessage[]): JsonObject { return { contents: messages.filter((message) => message.role !== "system").map((message) => ({ role: message.role === "assistant" ? "model" : "user", parts: [{ text: message.content }] })), systemInstruction: messages.find((message) => message.role === "system") ? { parts: [{ text: messages.find((message) => message.role === "system")?.content }] } : undefined, generationConfig: { temperature: 0.2 } }; }
+  private text(data: JsonObject): string { const candidates = Array.isArray(data.candidates) ? data.candidates : []; const first = candidates[0]; const content = first && typeof first === "object" && first !== null && "content" in first ? (first as JsonObject).content : undefined; const parts = content && typeof content === "object" && content !== null && "parts" in content ? content.parts : undefined; return Array.isArray(parts) ? parts.map((part) => typeof part === "object" && part !== null && "text" in part ? String(part.text) : "").join("") : ""; }
+  async chat(messages: AiMessage[]): Promise<string> { if (!this.isConfigured()) throw new Error("gemini API key is not configured"); const text = this.text(await requestJson(this.url("generateContent"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(this.body(messages)) }, this.name)); if (!text) throw new Error("gemini returned an empty response"); return text; }
+  async stream(messages: AiMessage[], onToken: (token: string) => void): Promise<void> { if (!this.isConfigured()) throw new Error("gemini API key is not configured"); const response = await requestStream(this.url("streamGenerateContent") + "&alt=sse", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(this.body(messages)) }, this.name); await streamLines(response, (line) => { const payload = line.startsWith("data:") ? line.slice(5).trim() : line; try { const text = this.text(JSON.parse(payload) as JsonObject); if (text) onToken(text); } catch { /* ignore keep-alive lines */ } }); }
+  async health(): Promise<boolean> { if (!this.isConfigured()) return false; try { await requestJson(this.url("generateContent"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: "ping" }] }], generationConfig: { maxOutputTokens: 1 } }) }, this.name); return true; } catch { return false; } }
+  async embeddings(input: string): Promise<number[]> { if (!this.isConfigured()) throw new Error("gemini API key is not configured"); const data = await requestJson(this.url("embedContent"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content: { parts: [{ text: input }] } }) }, this.name); const embedding = data.embedding; return embedding && typeof embedding === "object" && embedding !== null && "values" in embedding && Array.isArray(embedding.values) ? embedding.values.filter((value): value is number => typeof value === "number") : []; }
+}

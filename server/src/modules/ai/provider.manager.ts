@@ -1,17 +1,27 @@
 import { aiProviders } from "../../config/env.js";
-import { GeminiProvider } from "../../providers/llm/gemini.provider.js";
-import { GroqProvider } from "../../providers/llm/groq.provider.js";
-import { OpenAiProvider } from "../../providers/llm/openai.provider.js";
-import { OllamaProvider } from "../../providers/llm/ollama.provider.js";
+import { createProvider } from "./provider.factory.js";
 import type { AiMessage, AiProvider } from "./provider.js";
 
-const providerMap: Record<string, () => AiProvider> = { gemini: () => new GeminiProvider(), groq: () => new GroqProvider(), openai: () => new OpenAiProvider(), ollama: () => new OllamaProvider() };
 export class ProviderManager {
-  private readonly providers: AiProvider[] = aiProviders.map((name) => providerMap[name]?.() ?? new OllamaProvider());
+  private providers: AiProvider[] = aiProviders.map(createProvider);
   async chat(messages: AiMessage[]): Promise<{ provider: string; content: string }> {
-    for (const provider of this.providers) { try { return { provider: provider.name, content: await provider.chat(messages) }; } catch { /* fallback */ } }
-    throw new Error("No AI provider is available");
+    const failures: string[] = [];
+    for (const provider of this.providers) {
+      if (!provider.isConfigured()) { failures.push(`${provider.name}: not configured`); continue; }
+      try { return { provider: provider.name, content: await provider.chat(messages) }; } catch (error) { failures.push(error instanceof Error ? error.message : `${provider.name}: request failed`); }
+    }
+    throw new Error(`No configured AI provider is available. ${failures.join("; ")}`);
   }
-  list() { return this.providers.map((provider, index) => ({ name: provider.name, priority: index + 1, status: "configured" })); }
+  async stream(messages: AiMessage[], onToken: (token: string) => void): Promise<string> {
+    const failures: string[] = [];
+    for (const provider of this.providers) {
+      if (!provider.isConfigured()) { failures.push(`${provider.name}: not configured`); continue; }
+      try { await provider.stream(messages, onToken); return provider.name; } catch (error) { failures.push(error instanceof Error ? error.message : `${provider.name}: stream failed`); }
+    }
+    throw new Error(`No configured AI provider is available. ${failures.join("; ")}`);
+  }
+  async health() { return Promise.all(this.providers.map(async (provider, index) => ({ name: provider.name, priority: index + 1, status: !provider.isConfigured() ? "unconfigured" : (await provider.health() ? "healthy" : "unavailable") }))); }
+  list() { return this.providers.map((provider, index) => ({ name: provider.name, priority: index + 1, status: provider.isConfigured() ? "configured" : "unconfigured" })); }
+  setOrder(names: string[]) { this.providers = names.map(createProvider); return this.list(); }
 }
 export const providerManager = new ProviderManager();

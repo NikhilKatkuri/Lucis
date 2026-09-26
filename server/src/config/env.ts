@@ -10,10 +10,21 @@ const schema = z.object({
   SIMULATION_ENABLED: z.coerce.boolean().default(false),
   AI_PRIMARY_PROVIDER: z.string().default("ollama"),
   AI_FALLBACK_PROVIDERS: z.string().default("groq,openai"),
+  AI_REQUEST_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
   OLLAMA_BASE_URL: z.string().url().default("http://localhost:11434"),
+  OLLAMA_MODEL: z.string().default("llama3.2"),
   OPENAI_API_KEY: z.string().optional(),
+  OPENAI_BASE_URL: z.string().url().default("https://api.openai.com/v1"),
+  OPENAI_MODEL: z.string().default("gpt-4o-mini"),
   GEMINI_API_KEY: z.string().optional(),
-  GROQ_API_KEY: z.string().optional()
+  GEMINI_MODEL: z.string().default("gemini-2.0-flash"),
+  GROQ_API_KEY: z.string().optional(),
+  GROQ_MODEL: z.string().default("llama-3.3-70b-versatile"),
+  AZURE_OPENAI_ENDPOINT: z.string().url().optional(),
+  AZURE_OPENAI_API_KEY: z.string().optional(),
+  AZURE_OPENAI_API_VERSION: z.string().default("2024-10-21"),
+  AZURE_OPENAI_DEPLOYMENT: z.string().optional(),
+  AZURE_OPENAI_EMBEDDING_DEPLOYMENT: z.string().optional()
 });
 
 export const env = schema.parse(process.env);

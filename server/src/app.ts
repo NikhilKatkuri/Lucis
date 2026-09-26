@@ -326,13 +326,41 @@ export function createApp() {
   app.get("/api/ai/providers", (_request, response) =>
     response.json(providerManager.list()),
   );
-  app.patch("/api/ai/provider", (_request, response) =>
-    response
-      .status(501)
-      .json({
-        error:
-          "Provider order is configured with AI_PRIMARY_PROVIDER and AI_FALLBACK_PROVIDERS",
-      }),
+  app.get("/api/ai/providers/health", async (_request, response, next) => {
+    try { response.json(await providerManager.health()); } catch (error) { next(error); }
+  });
+  app.patch(
+    "/api/ai/provider",
+    validate(body(z.object({ providers: z.array(z.string().min(1)).min(1).max(5) }))),
+    (request, response) => response.json(providerManager.setOrder(request.body.providers)),
+  );
+  app.post(
+    "/api/ai/chat/stream",
+    validate(
+      body(
+        z.object({
+          location: coordinates.optional(),
+          message: z.string().min(1).max(4000),
+          radiusKm: z.number().positive().max(100).optional(),
+        }),
+      ),
+    ),
+    async (request, response) => {
+      response.status(200).set({ "content-type": "text/event-stream", "cache-control": "no-cache", connection: "keep-alive" });
+      const context = request.body.location ? buildContext(request.body.location, request.body.radiusKm) : undefined;
+      try {
+        const provider = await providerManager.stream(
+          [
+            { role: "system", content: "You are Lucis, an emergency context assistant. Answer only from the supplied JSON context." },
+            { role: "user", content: JSON.stringify({ message: request.body.message, context }) },
+          ],
+          (token) => response.write(`event: token\ndata: ${JSON.stringify({ token })}\n\n`),
+        );
+        response.write(`event: done\ndata: ${JSON.stringify({ provider })}\n\n`);
+      } catch (error) {
+        response.write(`event: error\ndata: ${JSON.stringify({ error: error instanceof Error ? error.message : "LLM request failed" })}\n\n`);
+      } finally { response.end(); }
+    },
   );
 
   const swaggerSpec = swaggerJsdoc({
